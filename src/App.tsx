@@ -100,4 +100,4 @@ export default function App() {
     <div className="site-shell">
       <header className="site-header">
         <button className="brand-button" onClick={() => navigate('home', 'start')} aria-label="Zur Startseite"><BrandMark /></button>
-        <nav className={`main-nav
+        <nav className={`main-nav ${menuOpen ? 'main-nav--open' : ''}`} aria-label="Hauptnavigation">
