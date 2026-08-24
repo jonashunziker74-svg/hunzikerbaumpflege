@@ -253,7 +253,7 @@ export default function App() {
               <div className="detail-card"><Clock3 size={22} /><div><span>Erreichbarkeit</span><p>Mo–Fr, 08:00–17:00 Uhr</p></div></div>
             </div>
             
-            {/* Kontaktformular verknüpft mit Netlify */}
+            {/* Kontaktformular verknüpft mit Netlify & automatischer Zurücksetzung */}
             <div className="contact-form-card">
               <p className="eyebrow">Unverbindlich anfragen</p>
               <h2>Was dürfen wir<br /><em>für Sie tun?</em></h2>
@@ -263,13 +263,18 @@ export default function App() {
                 data-netlify="true"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  const formData = new FormData(event.target as HTMLFormElement);
+                  const formElement = event.currentTarget;
+                  const formData = new FormData(formElement);
+
                   fetch("/", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: new URLSearchParams(formData as any).toString(),
                   })
-                    .then(() => alert("Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet."))
+                    .then(() => {
+                      alert("Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.");
+                      formElement.reset();
+                    })
                     .catch((error) => alert("Fehler beim Senden: " + error));
                 }}
               >
