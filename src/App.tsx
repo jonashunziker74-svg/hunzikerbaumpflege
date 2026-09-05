@@ -363,6 +363,16 @@ export default function App() {
                       E-Mail
                       <input type="email" name="email" placeholder="ihre@email.ch" required />
                     </label>
+
+                    <label>
+                      Telefon
+                      <input type="tel" name="phone" placeholder="079 123 45 67" />
+                    </label>
+
+                    <label>
+                      Ort / PLZ
+                      <input type="text" name="location" placeholder="z. B. 5000 Aarau" required />
+                    </label>
                     
                     <label>
                       Nachricht
