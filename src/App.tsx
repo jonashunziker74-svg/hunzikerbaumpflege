@@ -65,6 +65,7 @@ function RevealSection({ children, style }: { children: React.ReactNode; style?:
 
 export default function App() {
   const [openService, setOpenService] = useState<number | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const servicesData = [
     {
@@ -92,7 +93,7 @@ export default function App() {
     setPage(nextPage);
     setMenuOpen(false);
     window.setTimeout(() => {
-      document.getElementById(anchor ?? (nextPage === 'home' ? 'start' : 'kontakt'))?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById(anchor ?? (nextPage === 'home' ? 'start' : nextPage === 'region' ? 'einsatzgebiet' : 'kontakt'))?.scrollIntoView({ behavior: 'smooth' });
     }, 0);
   };
 
@@ -116,9 +117,16 @@ export default function App() {
                 <p className="eyebrow"><Trees size={16} /> Professionelle Baumpflege</p>
                 <h1>Arbeit die<br /><em>Frucht trägt.</em></h1>
                 <p className="hero-intro">Professionelle Baumpflege mit Herz, Handwerk und einem sicheren Blick fürs Detail. Für gesunde Bäume und Orte, an denen man gerne bleibt.</p>
-                <div className="hero-actions"><button className="button button--primary" onClick={() => navigate('contact', 'kontakt')}>Offerte anfragen</button><button className="text-link" onClick={() => document.getElementById('leistungen')?.scrollIntoView({ behavior: 'smooth' })}>Unsere Leistungen <ChevronRight size={17} /></button></div>
+                <div className="hero-actions">
+                  <button className="button button--primary" onClick={() => navigate('contact', 'kontakt')}>Kontakt aufnehmen</button>
+                  <button className="text-link" onClick={() => document.getElementById('leistungen')?.scrollIntoView({ behavior: 'smooth' })}>Unsere Leistungen <ChevronRight size={17} /></button>
+                </div>
               </div>
-              <div className="hero-visual"><div className="hero-image-frame"><img src= "/assets/images/Zeder von unten Marroko .jpg" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = remoteHeroImage; }} alt="Arborist bei der Baumpflege im Sonnenschein" /></div></div>
+              <div className="hero-visual">
+                <div className="hero-image-frame">
+                  <img src="/assets/images/Zeder von unten Marroko .jpg" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = remoteHeroImage; }} alt="Arborist bei der Baumpflege im Sonnenschein" />
+                </div>
+              </div>
             </section>
           </RevealSection>
 
@@ -135,31 +143,36 @@ export default function App() {
                   <h2>Mit Blick fürs Ganze.<br /><em>Für jeden Baum.</em></h2>
                 </div>
 
-                <div className="services-list">
+                <div className="services-accordion">
                   {servicesData.map((item, index) => (
                     <div 
-                      className={`service-row ${openService === index ? 'active' : ''}`} 
-                      key={index}
-                      onClick={() => setOpenService(openService === index ? null : index)}
+                      key={index} 
                       style={{ 
+                        borderBottom: '1px solid #E5E5E5', 
+                        padding: '1.25rem 0',
                         cursor: 'pointer',
-                        transition: 'all 0.3s ease',
                         display: 'grid',
-                        gridTemplateColumns: '24px 1fr',
-                        columnGap: '1.25rem',
-                        alignItems: 'start'
+                        gridTemplateColumns: 'auto 1fr',
+                        columnGap: '1rem',
+                        alignItems: 'baseline'
                       }}
+                      onClick={() => setOpenService(openService === index ? null : index)}
                     >
-                      <Plus 
-                        size={22} 
+                      <button 
                         style={{ 
-                          transform: openService === index ? 'rotate(45deg)' : 'rotate(0deg)', 
-                          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                          flexShrink: 0,
-                          marginTop: '0.2rem',
-                          gridColumn: '1'
-                        }} 
-                      />
+                          background: 'none', 
+                          border: 'none', 
+                          padding: 0, 
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          transform: openService === index ? 'rotate(45deg)' : 'rotate(0deg)',
+                          transition: 'transform 0.3s ease'
+                        }}
+                        aria-label="Details umschalten"
+                      >
+                        <Plus size={20} />
+                      </button>
                       
                       <h3 style={{ margin: 0, gridColumn: '2' }}>{item.title}</h3>
                       
@@ -213,7 +226,7 @@ export default function App() {
           <RevealSection>
             <section className="about-section">
               <div className="about-image">
-                <img src= "/assets/images/Portrait Jonas hunziker alt .JPG" onError={(event)=> { event.currentTarget.onerror = null; event.currentTarget.src = remotePortraitImage; }} alt="Jonas Hunziker, Inhaber und Geschäftsführer der Hunziker Baumpflege GmbH" />
+                <img src="/assets/images/Portrait Jonas hunziker alt .JPG" onError={(event)=> { event.currentTarget.onerror = null; event.currentTarget.src = remotePortraitImage; }} alt="Jonas Hunziker, Inhaber und Geschäftsführer der Hunziker Baumpflege GmbH" />
                 <div className="about-credentials"><span>Baumpflegespezialist FA</span><span>Landschaftsgärtner EFZ</span></div>
               </div>
               <div className="about-copy">
@@ -260,7 +273,7 @@ export default function App() {
           <section className="region-cta">
             <div>
               <h2>Ihre Gemeinde nicht dabei?</h2>
-              <p>Wir prüfen gerne, ob wir auch bei Ihnen vor Ort fahren können. Rufen Sie uns an oder senden Sie uns eine Nachricht.</p>
+              <p>Das sollte kein problem sein kontaktieren sie uns via Telefon oder Kontaktformular</p>
               <div className="hero-actions">
                 <button className="button button--primary" onClick={() => navigate('contact', 'kontakt')}>Offerte anfragen</button>
                 <a className="text-link" href="tel:+41786034397">Anrufen <ChevronRight size={17} /></a>
@@ -269,10 +282,112 @@ export default function App() {
           </section>
         </main>
       ) : (
-        <main id="kontakt" className="contact-page"><section className="contact-hero"><div><p className="eyebrow"><Mail size={16} /> Kontakt</p><h1>Erzählen Sie uns<br /><em>von Ihrem Baum.</em></h1><p className="hero-intro">Ob Beratung, Pflege oder eine dringende Frage: Wir freuen uns, von Ihnen zu hören.</p></div></section><section className="contact-grid"><div className="contact-details"><div className="detail-card"><Phone size={22} /><div><span>Telefon</span><a href="tel:+41786034397">078 603 43 97</a></div></div><div className="detail-card"><Mail size={22} /><div><span>E-Mail</span><a href="mailto:info@hunzikerbaumpflege.ch">info@hunzikerbaumpflege.ch</a></div></div><div className="detail-card"><MapPin size={22} /><div><span>Standort</span><p>Stolten 102, 5054 Kirchleerau</p></div></div><div className="detail-card"><Clock3 size={22} /><div><span>Erreichbarkeit</span><p>Mo–Fr, 08:00–17:00 Uhr</p></div></div></div><div className="contact-form-card"><p className="eyebrow">Unverbindlich anfragen</p><h2>Was dürfen wir<br /><em>für Sie tun?</em></h2><form onSubmit={(event) => event.preventDefault()}><label>Name<input type="text" placeholder="Ihr Name" /></label><label>E-Mail<input type="email" placeholder="ihre@email.ch" /></label><label>Nachricht<textarea rows={4} placeholder="Erzählen Sie uns kurz, worum es geht …" /></label><button className="button button--primary" type="submit">Nachricht senden</button></form></div></section></main>
+        <main id="kontakt" className="contact-page">
+          <section className="contact-hero">
+            <div>
+              <p className="eyebrow"><Mail size={16} /> Kontakt</p>
+              <h1>Erzählen Sie uns<br /><em>von Ihrem Baum.</em></h1>
+              <p className="hero-intro">Ob Beratung, Pflege oder eine dringende Frage: Wir freuen uns, von Ihnen zu hören.</p>
+            </div>
+          </section>
+          <section className="contact-grid">
+            <div className="contact-details">
+              <div className="detail-card"><Phone size={22} /><div><span>Telefon</span><a href="tel:+41786034397">078 603 43 97</a></div></div>
+              <div className="detail-card"><Mail size={22} /><div><span>E-Mail</span><a href="mailto:info@hunzikerbaumpflege.ch">info@hunzikerbaumpflege.ch</a></div></div>
+              <div className="detail-card"><MapPin size={22} /><div><span>Standort</span><p>Stolten 102, 5054 Kirchleerau</p></div></div>
+              <div className="detail-card"><Clock3 size={22} /><div><span>Erreichbarkeit</span><p>Mo–Fr, 08:00–17:00 Uhr</p></div></div>
+            </div>
+            
+            <div className="contact-form-card">
+              {submitted ? (
+                <div style={{
+                  padding: '2.5rem 1.5rem',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '1rem'
+                }}>
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    backgroundColor: '#e8f5e9',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#2e7d32'
+                  }}>
+                    <Trees size={36} />
+                  </div>
+                  <h3 style={{ fontSize: '1.4rem', margin: '0.5rem 0 0 0', color: '#1b4332' }}>
+                    Ihre Anfrage wurde gepflanzt.
+                  </h3>
+                  <p style={{ color: '#555', fontSize: '1.05rem', margin: 0, lineHeight: 1.5 }}>
+                    Eine Antwort ist bald reif.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <p className="eyebrow">Unverbindlich anfragen</p>
+                  <h2>Was dürfen wir<br /><em>für Sie tun?</em></h2>
+                  <form 
+                    name="contact" 
+                    method="POST" 
+                    data-netlify="true"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      const formElement = event.currentTarget;
+                      const formData = new FormData(formElement);
+
+                      fetch("/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: new URLSearchParams(formData as any).toString(),
+                      })
+                        .then(() => {
+                          setSubmitted(true);
+                          formElement.reset();
+                        })
+                        .catch((error) => alert("Fehler beim Senden: " + error));
+                    }}
+                  >
+                    <input type="hidden" name="form-name" value="contact" />
+                    
+                    <label>
+                      Name
+                      <input type="text" name="name" placeholder="Ihr Name" required />
+                    </label>
+                    
+                    <label>
+                      E-Mail
+                      <input type="email" name="email" placeholder="ihre@email.ch" required />
+                    </label>
+                    
+                    <label>
+                      Nachricht
+                      <textarea name="message" rows={4} placeholder="Erzählen Sie uns kurz, worum es geht …" required />
+                    </label>
+                    
+                    <button className="button button--primary" type="submit">Nachricht senden</button>
+                  </form>
+                </>
+              )}
+            </div>
+          </section>
+        </main>
       )}
 
-      <footer className="site-footer"><BrandMark /><div className="footer-meta"><span>Hunziker Baumpflege GmbH</span><span>Pflanzen · Kronenschnitt · Beurteilung · Spezialfällung</span></div><div className="footer-social"><a href="mailto:info@hunzikerbaumpflege.ch" aria-label="E-Mail"><Mail size={18} /></a></div></footer>
+      <footer className="site-footer">
+        <BrandMark />
+        <div className="footer-meta">
+          <span>Hunziker Baumpflege GmbH</span>
+          <span>Pflanzen · Kronenschnitt · Beurteilung · Spezialfällung</span>
+        </div>
+        <div className="footer-social">
+          <a href="mailto:info@hunzikerbaumpflege.ch" aria-label="E-Mail"><Mail size={18} /></a>
+        </div>
+      </footer>
     </div>
   );
 }
